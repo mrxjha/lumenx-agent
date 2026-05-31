@@ -20,5 +20,10 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
+# Explicitly run the role dispatcher. Setting startCommand here (rather than
+# relying on the Dockerfile CMD) is deliberate: Railway caches a service-level
+# start command from earlier deploys, and only a value present in railway.toml
+# reliably overrides it. entrypoint.sh then dispatches on SERVICE_ROLE.
+startCommand = "sh /app/entrypoint.sh"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
