@@ -1,0 +1,18 @@
+# Railway deployment manifest — single "web" service (wiki explorer UI).
+#
+# NOTE: railway.toml configures exactly ONE Railway service. The poller and
+# dashboard are NOT deployed by this file. They share the agent SQLite DB with
+# each other, which Railway services cannot do (one Volume per service), so
+# they will be deployed later either as a single combined service on a Volume
+# or after migrating the DB layer to Railway Postgres. See CLAUDE.md.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "uvicorn server.app:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/healthz"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

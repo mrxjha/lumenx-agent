@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+data/*.db
+data/poller_state.json
+psmux/
+.git/
+.idea/
+.vscode/
+*.png
+image*.png
+README.md.bak

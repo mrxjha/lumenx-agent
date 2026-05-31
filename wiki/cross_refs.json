@@ -1,0 +1,166 @@
+{
+  "emailpilot": {
+    "category_siblings": [
+      "inboxclean"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "pixeldeck",
+      "inboxclean"
+    ]
+  },
+  "invoiceflow": {
+    "category_siblings": [
+      "receiptvault",
+      "billsplit"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "receiptvault",
+      "billsplit"
+    ]
+  },
+  "taskgrid": {
+    "category_siblings": [
+      "timemark",
+      "kanbanlite"
+    ],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "formcraft": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "calendarsync": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "meetminutes"
+    ]
+  },
+  "notehub": {
+    "category_siblings": [
+      "linkvault"
+    ],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "chatrelay": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "signpath": {
+    "category_siblings": [
+      "documerge"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "documerge"
+    ]
+  },
+  "pollwise": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "meetminutes",
+      "teampulse"
+    ]
+  },
+  "receiptvault": {
+    "category_siblings": [
+      "invoiceflow",
+      "billsplit"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "invoiceflow"
+    ]
+  },
+  "timemark": {
+    "category_siblings": [
+      "taskgrid",
+      "kanbanlite"
+    ],
+    "mentions": [
+      "invoiceflow"
+    ],
+    "shared_integrations": []
+  },
+  "documerge": {
+    "category_siblings": [
+      "signpath"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "signpath"
+    ]
+  },
+  "kanbanlite": {
+    "category_siblings": [
+      "taskgrid",
+      "timemark"
+    ],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "meetminutes": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "calendarsync",
+      "pollwise",
+      "teampulse"
+    ]
+  },
+  "pixeldeck": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "emailpilot"
+    ]
+  },
+  "inboxclean": {
+    "category_siblings": [
+      "emailpilot"
+    ],
+    "mentions": [
+      "receiptvault"
+    ],
+    "shared_integrations": [
+      "emailpilot"
+    ]
+  },
+  "teampulse": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "pollwise",
+      "meetminutes"
+    ]
+  },
+  "linkvault": {
+    "category_siblings": [
+      "notehub"
+    ],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "billsplit": {
+    "category_siblings": [
+      "invoiceflow",
+      "receiptvault"
+    ],
+    "mentions": [],
+    "shared_integrations": [
+      "invoiceflow"
+    ]
+  },
+  "audittrail": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": []
+  }
+}
