@@ -28,11 +28,16 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     @property
+    def is_postgres(self) -> bool:
+        """True when DATABASE_URL points at PostgreSQL (prod). SQLite otherwise (dev)."""
+        return self.database_url.startswith(("postgres://", "postgresql://"))
+
+    @property
     def sqlite_path(self) -> Path:
         if self.database_url.startswith("sqlite:///"):
             rel = self.database_url.replace("sqlite:///", "", 1)
             return (PROJECT_ROOT / rel).resolve()
-        raise ValueError("Only sqlite:/// URLs are supported for direct file access")
+        raise ValueError("sqlite_path is only valid for sqlite:/// URLs (got a non-sqlite DATABASE_URL)")
 
     @property
     def wiki_path(self) -> Path:

@@ -135,15 +135,15 @@ def reject_draft(draft_id: int, correction: Optional[str]) -> None:
 def fetch_token_usage_df() -> pd.DataFrame:
     conn = get_connection()
     try:
-        df = pd.read_sql_query(
+        rows = conn.execute(
             """SELECT id, draft_id, model, step, input_tokens, output_tokens,
                       cost_usd, created_at
                FROM token_usage
                ORDER BY created_at DESC""",
-            conn,
-        )
+        ).fetchall()
     finally:
         conn.close()
+    df = pd.DataFrame([dict(r) for r in rows])
     if not df.empty:
         df["created_at"] = pd.to_datetime(df["created_at"])
     return df
@@ -152,7 +152,7 @@ def fetch_token_usage_df() -> pd.DataFrame:
 def fetch_recent_replies_df(limit: int = 50) -> pd.DataFrame:
     conn = get_connection()
     try:
-        df = pd.read_sql_query(
+        rows = conn.execute(
             f"""SELECT d.id AS draft_id, d.thread_id, d.intent, d.status, d.confidence,
                        d.created_at, d.sent_at,
                        (SELECT SUM(cost_usd) FROM token_usage WHERE draft_id = d.id) AS cost_usd,
@@ -161,11 +161,10 @@ def fetch_recent_replies_df(limit: int = 50) -> pd.DataFrame:
                 FROM drafts d
                 ORDER BY d.created_at DESC
                 LIMIT {int(limit)}""",
-            conn,
-        )
+        ).fetchall()
     finally:
         conn.close()
-    return df
+    return pd.DataFrame([dict(r) for r in rows])
 
 
 # ---------- shared ----------

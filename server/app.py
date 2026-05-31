@@ -85,18 +85,32 @@ def index() -> FileResponse:
     return FileResponse(STATIC / "index.html")
 
 
+def _db_ok() -> bool:
+    """Backend-agnostic DB liveness check (works for SQLite and Postgres)."""
+    try:
+        from db.connection import get_connection
+        conn = get_connection()
+        try:
+            conn.execute("SELECT 1").fetchone()
+            return True
+        finally:
+            conn.close()
+    except Exception:
+        return False
+
+
 @app.get("/healthz")
 def healthz() -> dict:
-    """Liveness probe for Railway / load balancer. Cheap — touches only the
-    wiki directory and the SQLite file path."""
+    """Liveness probe for Railway / load balancer. Cheap — checks the wiki
+    directory and a trivial DB round-trip."""
     try:
         wiki_dir = settings.wiki_path
-        db_exists = settings.sqlite_path.exists()
         wiki_ok = wiki_dir.exists() and any(wiki_dir.glob("*.md"))
+        db_ok = _db_ok()
         return {
-            "status": "ok" if (wiki_ok and db_exists) else "degraded",
+            "status": "ok" if (wiki_ok and db_ok) else "degraded",
             "wiki_pages": wiki_ok,
-            "db_present": db_exists,
+            "db_present": db_ok,
         }
     except Exception as e:
         return {"status": "error", "error": str(e)}

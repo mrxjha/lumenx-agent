@@ -47,8 +47,9 @@ def _wipe_smoke_rows():
 
 def _insert_thread(conn, tid):
     conn.execute(
-        """INSERT OR IGNORE INTO threads (id, username, display_name, product_id, intent)
-           VALUES (?, ?, ?, ?, ?)""",
+        """INSERT INTO threads (id, username, display_name, product_id, intent)
+           VALUES (?, ?, ?, ?, ?)
+           ON CONFLICT (id) DO NOTHING""",
         (tid, "synth_user", "Synth User", "invoiceflow", "pricing"),
     )
 

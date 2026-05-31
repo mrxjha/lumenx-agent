@@ -43,13 +43,17 @@ class PipelineResult:
 def _insert_pending_draft(thread_id: str, intent: Optional[str] = None) -> int:
     conn = get_connection()
     try:
+        # RETURNING id is portable across SQLite (>=3.35) and Postgres, and avoids
+        # the non-portable sqlite-only cursor.lastrowid.
         cur = conn.execute(
             """INSERT INTO drafts (thread_id, intent, draft_text, status)
-               VALUES (?, ?, '', 'pending_review')""",
+               VALUES (?, ?, '', 'pending_review')
+               RETURNING id""",
             (thread_id, intent),
         )
+        new_id = cur.fetchone()["id"]
         conn.commit()
-        return cur.lastrowid
+        return new_id
     finally:
         conn.close()
 
@@ -124,9 +128,10 @@ def _upsert_thread(thread: ThreadInput, intent: Optional[str]) -> None:
         for m in thread.messages:
             try:
                 conn.execute(
-                    """INSERT OR IGNORE INTO messages
+                    """INSERT INTO messages
                        (thread_id, remote_msg_id, role, text)
-                       VALUES (?, ?, ?, ?)""",
+                       VALUES (?, ?, ?, ?)
+                       ON CONFLICT (thread_id, remote_msg_id) DO NOTHING""",
                     (
                         thread.thread_id,
                         m.get("id") or m.get("remote_msg_id"),

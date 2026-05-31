@@ -20,15 +20,17 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Build the wiki at image-build time so the container is ready to serve
-# immediately. Falls back gracefully at runtime if the LumenX API is unreachable.
-RUN python -m wiki.builder || echo "[warn] wiki build skipped — will retry at runtime"
+# immediately. Falls back to the committed wiki/products/*.md if the LumenX API
+# (and its token) aren't available at build time.
+RUN python -m wiki.builder || echo "[warn] wiki build skipped — using committed wiki pages"
 
-# Initialize the SQLite schema (idempotent — safe to re-run on every boot)
-RUN python -m db.connection
+# NOTE: the DB schema is initialized at RUNTIME by entrypoint.sh, not here —
+# the Postgres database isn't reachable during the image build.
 
 ENV PORT=8000
 EXPOSE 8000
 
-# Default entrypoint runs the wiki + healthcheck server. Override via railway.toml
-# `[services.<name>] start = "..."` for the poller and dashboard services.
-CMD ["sh", "-c", "uvicorn server.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# One image, three roles. The running container picks its role from SERVICE_ROLE
+# (web | dashboard | poller); see entrypoint.sh. No per-service start command is
+# needed — services differ only by the SERVICE_ROLE env var.
+CMD ["sh", "/app/entrypoint.sh"]
