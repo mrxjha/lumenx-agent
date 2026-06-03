@@ -24,10 +24,10 @@ startCommand = "sh /app/entrypoint.sh"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
 
-# Healthcheck — tells Railway to wait for Streamlit's built-in health endpoint
-# before routing traffic. Without this Railway routes immediately (-> 502 while
-# Streamlit is still starting). healthcheckTimeout gives Streamlit 120 s to boot.
-# For the poller role this path never responds, but the poller has no public
-# domain so Railway won't perform an HTTP health check against it.
-healthcheckPath = "/_stcore/health"
-healthcheckTimeout = 120
+# NOTE: healthcheckPath is NOT set here because this railway.toml is shared by
+# all three service roles (web, dashboard, poller). The poller has no HTTP
+# server, so a healthcheck in the shared config causes it to fail. Instead,
+# set healthcheckPath per-service in the Railway dashboard:
+#   dashboard -> /_stcore/health (Streamlit built-in endpoint)
+#   web       -> /health (or your FastAPI health endpoint)
+#   poller    -> (none — background worker, no HTTP)
