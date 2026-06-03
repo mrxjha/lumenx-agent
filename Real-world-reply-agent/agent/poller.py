@@ -27,6 +27,9 @@ import time
 from pathlib import Path
 from typing import Any, Optional
 
+# httpx logs full URLs at INFO level which would expose the bot token in logs.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 from agent.context_builder import ThreadInput
 from agent.pipeline import PipelineResult, run as run_pipeline
 from config import PROJECT_ROOT, settings
