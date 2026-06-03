@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Real-World Auto-Reply Agent — Project Report</title>
+<style>
+  :root { --ink:#1a1d21; --muted:#5b6470; --accent:#0b5cab; --line:#d8dee6; --bg-soft:#f4f7fb; --good:#0a7d39; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 12mm 13mm; }
+  body { font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif; color:var(--ink);
+         font-size:9.8px; line-height:1.4; margin:0; }
+  h1 { font-size:19px; margin:0 0 2px; letter-spacing:-.3px; }
+  h2 { font-size:12px; color:var(--accent); margin:11px 0 4px; padding-bottom:2px;
+       border-bottom:2px solid var(--line); text-transform:uppercase; letter-spacing:.5px; }
+  h3 { font-size:10.3px; margin:7px 0 1px; }
+  p { margin:3px 0; }
+  .subtitle { color:var(--muted); font-size:11px; margin:0 0 8px; }
+  .meta { display:grid; grid-template-columns:1fr 1fr; gap:1px 18px; font-size:9px;
+          background:var(--bg-soft); border:1px solid var(--line); border-radius:6px;
+          padding:7px 11px; margin:8px 0 2px; page-break-inside:avoid; }
+  .meta a { color:var(--accent); text-decoration:none; word-break:break-all; }
+  table { width:100%; border-collapse:collapse; margin:4px 0; font-size:9.2px; page-break-inside:avoid; }
+  th,td { border:1px solid var(--line); padding:3px 6px; text-align:left; vertical-align:top; }
+  th { background:var(--bg-soft); font-weight:600; }
+  td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:6px 0; page-break-inside:avoid; }
+  .kpi { border:1px solid var(--line); border-radius:6px; padding:6px 9px; }
+  .kpi .v { font-size:16px; font-weight:700; color:var(--accent); }
+  .kpi .l { font-size:8px; color:var(--muted); text-transform:uppercase; letter-spacing:.3px; }
+  .diagram { background:var(--bg-soft); border:1px solid var(--line); border-radius:6px;
+             padding:7px 11px; font-family:"Consolas","Courier New",monospace; font-size:8px;
+             line-height:1.3; white-space:pre; page-break-inside:avoid; }
+  ul { margin:3px 0; padding-left:15px; } li { margin:1.5px 0; }
+  .good { color:var(--good); font-weight:600; }
+  .note { color:var(--muted); font-size:8.8px; font-style:italic; }
+  code { background:var(--bg-soft); padding:0 3px; border-radius:3px; font-size:8.8px; }
+  .brk { page-break-before:always; }
+  .foot { margin-top:8px; border-top:1px solid var(--line); padding-top:4px;
+          color:var(--muted); font-size:8.2px; display:flex; justify-content:space-between; }
+  .ph { border:1.4px dashed #b7c2d0; border-radius:6px; color:#8a96a5; text-align:center;
+        padding:12px; font-size:8.8px; margin:5px 0; }
+</style>
+</head>
+<body>
+
+<h1>Real-World Context-Engineered Auto-Reply Agent</h1>
+<p class="subtitle">A confidence-gated LLM support agent for Ramco products, delivered as a Telegram bot</p>
+<div class="meta">
+  <div><b>Author:</b> Nikhil Kumar Jha</div><div><b>Date:</b> 4 June 2026</div>
+  <div><b>Platform:</b> Telegram — <code>@ramco_assist_bot</code></div><div><b>Knowledge:</b> Ramco products (public)</div>
+  <div><b>Hosted:</b> <a href="https://caring-gentleness-production-c3e7.up.railway.app">caring-gentleness-production-c3e7.up.railway.app</a></div>
+  <div><b>Deployment:</b> Railway (poller + dashboard + Postgres)</div>
+  <div><b>Models:</b> Haiku 4.5 (router) · Sonnet 4.6 (drafter)</div>
+  <div><b>Repo:</b> github.com/mrxjha/lumenx-agent · <code>/Real-world-reply-agent</code></div>
+</div>
+
+<h2>1 · Overview</h2>
+<p>The agent answers questions about Ramco's enterprise software (ERP, HCM &amp; Global Payroll, Aviation/MRO,
+Logistics, EAM) on a real messaging platform. An incoming Telegram message is classified by intent, answered
+from a curated knowledge base with Claude, scored by a small neural network, and then <b>auto-sent</b> when
+confidence is high or routed to a <b>human-review dashboard</b> when it is not. Every model call is cost-logged.
+The objective: automate routine replies while <b>never hallucinating on pricing or contract terms</b>, keeping a
+human in the loop until the model earns trust.</p>
+
+<h2>2 · System Architecture</h2>
+<div class="diagram">Telegram msg ─► Intent Router (Haiku)  ─►  greeting / off-topic → polite reply
+                     │  pricing · refund · technical · other
+                     ▼
+                Context Builder
+                  • LLM Wiki  (Ramco product pages + company policy)
+                  • current chat history + past-conversation gist
+                  • feedback log  (past approved Q→A pairs)
+                     ▼
+                Drafter (Sonnet)  — anti-hallucination prompt, cites sources, logs tokens/cost
+                     ▼
+                Confidence Net (Tiny MLP)  →  score 0–1
+                     │  ≥ 0.90  &amp; AUTO_SEND on            &lt; 0.90  (or AUTO_SEND off)
+                     ▼                                      ▼
+                 auto-send                          human-review dashboard → edit/approve → send
+                     └──────────────► feedback log  →  labels for the next MLP retrain</div>
+<p class="note">The pipeline is platform-agnostic — the Telegram connector is the only messaging-specific module,
+so an email/Teams backend could be swapped in without touching the agent logic.</p>
+
+<h2>3 · Build Process</h2>
+<ul>
+  <li><b>LLM Wiki.</b> Five Ramco product lines + a company-policy page rendered to structured Markdown with a
+    cross-reference graph (Karpathy "LLM-wiki" pattern). Pricing is recorded as <i>"not published publicly,"</i> so
+    correct deflection becomes the grounded answer.</li>
+  <li><b>Cold-start data &amp; Confidence Net.</b> A bot cannot scrape past chats, so 47 realistic
+    (question → draft → ideal-reply) examples bootstrap the MLP — negatives reproduce feared failures (invented
+    prices, missing citations); positives are grounded and cited.</li>
+  <li><b>Pipeline.</b> Intent router (cheap model) → context builder → drafter (quality model) with an
+    anti-hallucination prompt → per-call token/cost logging.</li>
+  <li><b>Dashboard.</b> Streamlit review queue with confidence badge, expandable context window, cost panel, and
+    one-click approve/edit/reject that replies via Telegram.</li>
+  <li><b>Deployment.</b> One Docker image, three roles (poller / dashboard / web) on Railway with managed Postgres.</li>
+</ul>
+
+<!-- ===================== PAGE 2 ===================== -->
+<h2 class="brk">4 · Context Engineering</h2>
+<h3>4.1 Intent router</h3>
+<p>A cheap Haiku call labels each message <code>greeting · pricing · refund · technical · other</code> and returns
+JSON with its own confidence. Greetings and off-topic chat are answered politely without invoking the expensive
+drafter, and the label biases retrieval toward the right wiki pages.</p>
+<h3>4.2 The context window</h3>
+<p>For each reply the builder assembles four ranked sources into one prompt: (1) the <b>LLM Wiki</b> — company
+policy plus the top pages by keyword overlap with the query, expanded along the cross-reference graph;
+(2) the <b>current chat history</b>; (3) a <b>summary of past conversations</b>; and (4) a <b>feedback log</b> of
+previously approved Q→A pairs for the same intent. The dashboard can show this exact window per reply for auditability.</p>
+<h3>4.3 Anti-hallucination guardrail</h3>
+<p>The drafter's system prompt forbids inventing prices, refund windows, or contract terms; if the answer is not in
+the loaded wiki it must say so and offer to route to sales. Facts are cited inline with source tags
+(e.g. <code>[ramco_hcm]</code>, <code>[company_policy]</code>), which also feed the confidence model.</p>
+<h3>4.4 Confidence Net (the routing brain)</h3>
+<p>A small scikit-learn MLP (hidden layers 32→16) scores each draft 0–1 — "would a human send this as-is?" — using
+only signals available <i>before</i> sending: draft length/word-count, digit count (pricing-risk), citation count,
+hedge-phrase presence, sign-off compliance, retrieval-hit count, and the intent one-hot. Labels come from
+edit-distance between the draft and the human-sent reply (near-duplicate → 1; heavily edited/rejected → 0) plus
+explicit thumbs feedback. Drafts scoring ≥ a configurable threshold (default <b>0.90</b>) qualify for auto-send;
+a global <code>AUTO_SEND_ENABLED</code> switch keeps everything in human review during cold-start.</p>
+
+<h2>5 · Deployment</h2>
+<p>One Docker image is dispatched into three roles via a <code>SERVICE_ROLE</code> variable on Railway, all sharing
+a managed Postgres database:</p>
+<table>
+  <tr><th>Service</th><th>Role</th><th>Public?</th><th>Function</th></tr>
+  <tr><td><b>poller</b></td><td><code>poller</code></td><td>No</td><td>Telegram <code>getUpdates</code> loop → pipeline → route</td></tr>
+  <tr><td><b>dashboard</b></td><td><code>dashboard</code></td><td>Yes — the hosted URL</td><td>Human review queue + cost dashboard</td></tr>
+  <tr><td>Postgres</td><td>—</td><td>No</td><td>Shared state: threads, drafts, feedback, token usage</td></tr>
+</table>
+<p class="note">Engineering notes: the corporate network blocks Telegram, so the live bot is driven from a mobile
+device while the build/test loop runs locally against the (reachable) model API — Railway runs outside that
+firewall. Deploy fixes: a Streamlit health-check path (so traffic isn't routed before the app binds), a Postgres
+connect-timeout, and suppression of HTTP-client logs that would otherwise print the bot token.</p>
+
+<!-- ===================== PAGE 3 ===================== -->
+<h2 class="brk">6 · Performance Analysis</h2>
+<p>Measured on a balanced 10-query set (pricing, refund, technical, other, greeting) run through the full
+production pipeline against the live models.</p>
+<div class="kpis">
+  <div class="kpi"><div class="v">100%</div><div class="l">Intent accuracy</div></div>
+  <div class="kpi"><div class="v">4.3 s</div><div class="l">Avg reply latency</div></div>
+  <div class="kpi"><div class="v">$0.0099</div><div class="l">Cost / reply</div></div>
+  <div class="kpi"><div class="v good">0%</div><div class="l">Hallucination rate</div></div>
+</div>
+
+<h3>6.1 Accuracy &amp; 6.2 Speed</h3>
+<p>The intent router labelled <b>10 / 10</b> queries correctly; on grounded drafts the Confidence Net scored
+0.99–1.00. End-to-end latency (routing + retrieval + drafting):</p>
+<table>
+  <tr><th>Latency</th><th class="n">Average</th><th class="n">Median</th><th class="n">Min</th><th class="n">Max</th></tr>
+  <tr><td>Per reply</td><td class="n">4.30 s</td><td class="n">4.34 s</td><td class="n">3.47 s</td><td class="n">5.25 s</td></tr>
+</table>
+<p class="note">Drafting (Sonnet) dominates latency; routing (Haiku) is sub-second. A "typing…" indicator is shown while drafting.</p>
+
+<h3>6.3 Cost</h3>
+<table>
+  <tr><th>Component</th><th>Model</th><th class="n">Avg / reply</th><th class="n">Share</th></tr>
+  <tr><td>Intent routing</td><td>Claude Haiku 4.5</td><td class="n">$0.00058</td><td class="n">6%</td></tr>
+  <tr><td>Reply drafting</td><td>Claude Sonnet 4.6</td><td class="n">$0.00928</td><td class="n">94%</td></tr>
+  <tr><td>Confidence scoring</td><td>local MLP</td><td class="n">$0.00000</td><td class="n">0%</td></tr>
+  <tr><td><b>Total</b></td><td></td><td class="n"><b>$0.00986</b></td><td class="n"><b>100%</b></td></tr>
+</table>
+<p class="note">≈ <b>$0.99 per 100 replies</b> (≈ $9.86 / 1,000). The cheap-router / quality-drafter split keeps
+classification effectively free; local MLP scoring adds zero marginal cost.</p>
+
+<h3>6.4 Hallucination rate</h3>
+<p>Across the 4 sensitive (pricing/refund) queries the agent quoted <b>0 fabricated prices or terms</b> — all four
+deflected to a custom quote / the signed contract, with citations. An automated keyword check flagged 1 reply, but
+manual review showed a <b>false positive</b>: it described the pricing <i>model</i> ("per employee, per country")
+while stating there is no published fee — no number was invented. <b class="good">True hallucination rate: 0%.</b></p>
+
+<h3>6.5 Confidence model</h3>
+<p>Bootstrapped on <b>47</b> generated examples (29 positive / 18 negative). It fits this small distribution
+cleanly; a held-out split and weekly retraining on real dashboard feedback are the path to a calibrated threshold.</p>
+
+<h2>7 · Limitations &amp; Next Steps</h2>
+<ul>
+  <li>The MLP is bootstrapped on synthetic data; real dashboard approve/edit/reject feedback will replace it and
+    enable a proper held-out evaluation and threshold calibration.</li>
+  <li>Wiki relevance uses keyword overlap; embeddings would improve retrieval on paraphrased questions.</li>
+  <li>Hallucination is measured by heuristic + manual review on a small set; an LLM-graded rubric on a larger
+    held-out set would tighten the estimate. Prompt caching on the reused wiki block would cut drafting cost further.</li>
+</ul>
+
+<div class="ph">Figure — paste screenshots here: (1) dashboard review queue showing a confidence score + the expandable
+context window, and (2) the Telegram chat showing a pricing deflection.</div>
+
+<div class="foot">
+  <span>Hosted: caring-gentleness-production-c3e7.up.railway.app · Bot: @ramco_assist_bot</span>
+  <span>Real-World Auto-Reply Agent — Nikhil Kumar Jha</span>
+</div>
+
+</body>
+</html>
