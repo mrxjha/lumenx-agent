@@ -1,29 +1,33 @@
 # Railway deployment manifest.
 #
-# This repo deploys as THREE services off one Docker image (web, dashboard,
-# poller) plus a managed Postgres database. Each service runs the same image
-# and selects its behavior via the SERVICE_ROLE env var (see entrypoint.sh):
+# One Docker image, three roles (poller | dashboard | web) off a single repo.
+# Each Railway service sets SERVICE_ROLE to pick its behaviour (entrypoint.sh
+# dispatches on it). All three share state through DATABASE_URL (Postgres).
 #
-#   SERVICE_ROLE=web        uvicorn wiki explorer        (public)
-#   SERVICE_ROLE=dashboard  streamlit review + cost UI   (public)
-#   SERVICE_ROLE=poller     background auto-reply loop   (no public port)
-#
-# All three share state through DATABASE_URL (Postgres), so poller-generated
-# drafts appear in the dashboard's review queue.
-#
-# No startCommand is set here on purpose: the Dockerfile CMD runs entrypoint.sh,
-# which dispatches on SERVICE_ROLE. That keeps a single railway.toml valid for
-# every service (railway.toml can only describe one service's start command).
+# IMPORTANT — set these on every service via the Variables tab:
+#   SERVICE_ROLE        poller | dashboard | web
+#   TELEGRAM_BOT_TOKEN  from @BotFather
+#   ANTHROPIC_API_KEY   from console.anthropic.com
+#   DATABASE_URL        ${{Postgres.DATABASE_URL}}
+#   AUTO_SEND_ENABLED   false
+#   CONFIDENCE_THRESHOLD 0.90
 
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-# Explicitly run the role dispatcher. Setting startCommand here (rather than
-# relying on the Dockerfile CMD) is deliberate: Railway caches a service-level
-# start command from earlier deploys, and only a value present in railway.toml
-# reliably overrides it. entrypoint.sh then dispatches on SERVICE_ROLE.
+# startCommand must be set here (not just Dockerfile CMD) because Railway caches
+# a service-level start command from earlier deploys and only a value in
+# railway.toml reliably overrides it.
 startCommand = "sh /app/entrypoint.sh"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
+
+# Healthcheck — tells Railway to wait for Streamlit's built-in health endpoint
+# before routing traffic. Without this Railway routes immediately (-> 502 while
+# Streamlit is still starting). healthcheckTimeout gives Streamlit 120 s to boot.
+# For the poller role this path never responds, but the poller has no public
+# domain so Railway won't perform an HTTP health check against it.
+healthcheckPath = "/_stcore/health"
+healthcheckTimeout = 120

@@ -55,7 +55,9 @@ def get_connection():
         import psycopg
         from psycopg.rows import dict_row
 
-        raw = psycopg.connect(settings.database_url, row_factory=dict_row)
+        # connect_timeout prevents blocking entrypoint.sh startup when Postgres
+        # is briefly unavailable (e.g. Railway container ordering at boot).
+        raw = psycopg.connect(settings.database_url, row_factory=dict_row, connect_timeout=10)
         return _PgConnection(raw)
 
     db_path = settings.sqlite_path
