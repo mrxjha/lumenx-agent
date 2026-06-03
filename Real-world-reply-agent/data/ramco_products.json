@@ -1,0 +1,152 @@
+{
+  "company": {
+    "name": "Ramco Systems",
+    "tagline": "Enterprise software for the cloud era — ERP, HCM & Payroll, Aviation, and Logistics.",
+    "description": "Ramco Systems is a global enterprise software provider best known for its cloud-native ERP, Global Payroll & HCM, Aviation/Aerospace & Defense (M&E/MRO), and Logistics solutions. Ramco software is delivered on the Ramco platform with embedded AI/ML, and is used by enterprises across 150+ countries.",
+    "founded": "1997",
+    "headquarters": "Chennai, India",
+    "billing_currency": "Varies by region / contract",
+    "support_email": "Refer to your Ramco account manager or the public contact form at ramco.com/contact",
+    "support_hours": "Enterprise support per the signed service agreement (regional coverage; 24x7 available on eligible plans)",
+    "refund_window_days": null,
+    "free_trial_days": null,
+    "annual_discount_pct": null,
+    "pricing_policy": "Ramco does not publish list pricing. All pricing, licensing tiers, and discounts are provided by Ramco sales as a custom enterprise quote.",
+    "contract_policy": "Refunds, cancellation, and renewal terms are governed by the customer's signed enterprise agreement (MSA/order form); there is no public, one-size-fits-all refund window."
+  },
+  "products": [
+    {
+      "id": "ramco_erp",
+      "name": "Ramco ERP",
+      "category": "ERP",
+      "tagline": "Cloud-native, AI-powered ERP for mid-to-large enterprises.",
+      "description": "Ramco ERP is an integrated, cloud-native enterprise resource planning suite covering finance, supply chain, manufacturing, procurement, sales, and project management. It uses a unified data model with embedded analytics and context-aware automation so business processes can span modules without custom integration.",
+      "target_audience": "Mid-to-large enterprises in manufacturing, services, and distribution that want a single integrated ERP on the cloud.",
+      "pricing": "Not published publicly. Ramco ERP is licensed via a custom enterprise quote based on modules, users, and deployment. Contact Ramco sales.",
+      "features": [
+        "Finance & accounting (GL, AP/AR, multi-currency, multi-GAAP)",
+        "Supply chain and inventory management",
+        "Manufacturing and production planning",
+        "Procurement and vendor management",
+        "Project management and costing",
+        "Embedded analytics and role-based dashboards",
+        "Context-aware in-app automation (Ramco's 'cognitive' workflows)"
+      ],
+      "integrations": [
+        "REST/SOAP web services API",
+        "Salesforce",
+        "Microsoft 365 / Excel",
+        "Bank payment gateways",
+        "Tax e-invoicing networks"
+      ],
+      "refund": "Governed by the customer's signed enterprise agreement (MSA/order form). There is no public refund window — refer pricing/refund questions to the account manager.",
+      "cancellation": "Per the contractual notice period in the signed order form.",
+      "support_sla_hours": 24
+    },
+    {
+      "id": "ramco_hcm",
+      "name": "Ramco HCM & Global Payroll",
+      "category": "HCM",
+      "tagline": "Unified HR and multi-country payroll across 100+ countries.",
+      "description": "Ramco HCM is a unified Human Capital Management and Global Payroll platform covering core HR, time & attendance, talent management, and statutory-compliant payroll across 100+ countries from a single system. It is known for its multi-country payroll engine and chatbot-driven employee experience.",
+      "target_audience": "Multinational employers and shared-service / payroll-outsourcing providers needing consolidated multi-country payroll and HR.",
+      "pricing": "Not published publicly. Priced per employee/per country via a custom enterprise quote. Contact Ramco sales.",
+      "features": [
+        "Core HR and employee master data",
+        "Global payroll across 100+ countries with local statutory compliance",
+        "Time & attendance and leave management",
+        "Talent management (recruitment, performance, learning)",
+        "Employee self-service with conversational chatbot",
+        "Payroll analytics and compliance reporting"
+      ],
+      "integrations": [
+        "REST web services API",
+        "Microsoft 365",
+        "Time-clock / biometric devices",
+        "Banking & payment files",
+        "Third-party benefits providers"
+      ],
+      "refund": "Governed by the signed enterprise agreement. No public refund window; direct billing/refund questions to the account manager.",
+      "cancellation": "Per the contractual notice period in the signed order form.",
+      "support_sla_hours": 24
+    },
+    {
+      "id": "ramco_aviation",
+      "name": "Ramco Aviation (M&E / MRO)",
+      "category": "Aviation",
+      "tagline": "Aviation, Aerospace & Defense maintenance and MRO software.",
+      "description": "Ramco Aviation is a comprehensive Maintenance & Engineering (M&E) and Maintenance, Repair & Overhaul (MRO) suite for airlines, MROs, heli-operators, and defense fleets. It covers airworthiness, line and base maintenance, component overhaul, supply chain, and compliance, with mobility and AI-assisted maintenance.",
+      "target_audience": "Airlines, independent MRO providers, helicopter operators, and aerospace & defense fleet operators.",
+      "pricing": "Not published publicly. Licensed via a custom enterprise quote based on fleet size and modules. Contact Ramco sales.",
+      "features": [
+        "Airworthiness and continuing-airworthiness management",
+        "Line, base, and shop (component) maintenance",
+        "MRO supply chain and inventory",
+        "Compliance with aviation regulatory frameworks",
+        "Maintenance mobility apps (offline-capable)",
+        "AI-assisted maintenance and anomaly insights"
+      ],
+      "integrations": [
+        "REST web services API",
+        "OEM data feeds",
+        "Flight operations systems",
+        "Finance/ERP back-ends"
+      ],
+      "refund": "Governed by the signed enterprise agreement. No public refund window.",
+      "cancellation": "Per the contractual notice period in the signed order form.",
+      "support_sla_hours": 12
+    },
+    {
+      "id": "ramco_logistics",
+      "name": "Ramco Logistics",
+      "category": "Logistics",
+      "tagline": "Logistics & Transportation Management for 3PL and freight.",
+      "description": "Ramco Logistics is a transportation and logistics management suite for third-party logistics (3PL), freight forwarding, and courier/express businesses. It covers order and contract management, billing, fleet and route optimization, and digital proof-of-delivery on a single platform.",
+      "target_audience": "3PL providers, freight forwarders, and courier/express/parcel companies.",
+      "pricing": "Not published publicly. Licensed via a custom enterprise quote. Contact Ramco sales.",
+      "features": [
+        "Order and contract management",
+        "Rating, billing, and settlement",
+        "Fleet and route optimization",
+        "Warehouse and inventory visibility",
+        "Digital proof-of-delivery (mobile)",
+        "Logistics analytics and dashboards"
+      ],
+      "integrations": [
+        "REST web services API",
+        "Telematics / GPS providers",
+        "E-commerce marketplaces",
+        "Finance/ERP back-ends"
+      ],
+      "refund": "Governed by the signed enterprise agreement. No public refund window.",
+      "cancellation": "Per the contractual notice period in the signed order form.",
+      "support_sla_hours": 24
+    },
+    {
+      "id": "ramco_eam",
+      "name": "Ramco EAM",
+      "category": "ERP",
+      "tagline": "Enterprise Asset Management for asset-intensive operations.",
+      "description": "Ramco EAM (Enterprise Asset Management) helps asset-intensive organizations manage the full asset lifecycle: maintenance planning, work orders, spares inventory, and reliability — with mobility and predictive-maintenance insights. It is often deployed alongside Ramco ERP.",
+      "target_audience": "Asset-intensive operators (utilities, infrastructure, equipment fleets, facilities).",
+      "pricing": "Not published publicly. Licensed via a custom enterprise quote. Contact Ramco sales.",
+      "features": [
+        "Asset register and lifecycle tracking",
+        "Preventive and predictive maintenance",
+        "Work order and resource scheduling",
+        "Spares and inventory management",
+        "Maintenance mobility apps",
+        "Reliability and cost analytics"
+      ],
+      "integrations": [
+        "REST web services API",
+        "Ramco ERP",
+        "IoT / sensor data feeds",
+        "Finance back-ends"
+      ],
+      "refund": "Governed by the signed enterprise agreement. No public refund window.",
+      "cancellation": "Per the contractual notice period in the signed order form.",
+      "support_sla_hours": 24
+    }
+  ]
+}

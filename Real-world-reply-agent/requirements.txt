@@ -1,0 +1,16 @@
+anthropic>=0.40.0
+httpx>=0.27.0
+python-dotenv>=1.0.1
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+streamlit>=1.40.0
+scikit-learn>=1.5.0
+numpy>=1.26.0
+pandas>=2.2.0
+python-Levenshtein>=0.25.0
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+psycopg[binary]>=3.2.0
+# --- Ramco docs scraping for the LLM wiki (Phase 1) ---
+beautifulsoup4>=4.12.0
+# Telegram uses the raw Bot API over httpx (above) — no extra SDK needed.

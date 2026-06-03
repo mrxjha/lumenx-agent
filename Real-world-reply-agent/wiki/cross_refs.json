@@ -1,0 +1,37 @@
+{
+  "ramco_erp": {
+    "category_siblings": [
+      "ramco_eam"
+    ],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "ramco_hcm": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": []
+  },
+  "ramco_aviation": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "ramco_logistics"
+    ]
+  },
+  "ramco_logistics": {
+    "category_siblings": [],
+    "mentions": [],
+    "shared_integrations": [
+      "ramco_aviation"
+    ]
+  },
+  "ramco_eam": {
+    "category_siblings": [
+      "ramco_erp"
+    ],
+    "mentions": [
+      "ramco_erp"
+    ],
+    "shared_integrations": []
+  }
+}

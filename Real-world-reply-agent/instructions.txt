@@ -1,0 +1,63 @@
+REAL-WORLD CONTEXT-ENGINEERED AUTO-REPLY AGENT (Telegram) — instructions
+
+This is the follow-up to the LumenX Auto-Reply Agent (../Auto-reply-agent). The
+architecture is identical; what changes is that the agent now runs on a REAL
+platform (a Telegram bot) answering questions about REAL Ramco products, instead
+of the LumenX demo API.
+
+PLATFORM:  Telegram bot (Bot API).
+  - Chosen because it is the lowest-setup real platform: auth is a single bot
+    token from @BotFather. No OAuth, no consent screen, no corporate/IT admin.
+  - Email and Microsoft Teams were rejected. The @ramco.com work account is
+    off-limits (it would expose real work data in the publicly-showcased
+    deliverables, and would need Entra/IT admin consent).
+  - Connector lives in tg/client.py (raw Bot API over httpx) and stays
+    abstracted so another platform could be swapped in later.
+
+KNOWLEDGE DOMAIN:  Ramco products.
+  - LLM Wiki built by scraping Ramco's PUBLIC product/docs pages (ERP, HCM/Global
+    Payroll, Aviation M&E, Logistics, etc.) into wiki/products/*.md, Karpathy-
+    LLM-wiki style. Cross-product policy/company info -> wiki/company_policy.md.
+  - Use ONLY public information. Never use real Ramco internal/work data.
+
+WHAT THE AGENT DOES:
+  1. Poll Telegram for new messages (getUpdates long-poll).
+  2. Intent router (cheap model) classifies the query; pure greetings / off-topic
+     are answered politely at the router and stop there.
+  3. Context builder assembles: current chat history + summary of past
+     conversations + relevant LLM wiki pages + feedback log of past good Q->A.
+  4. Claude drafts a reply (quality model) with an anti-hallucination system
+     prompt. NEVER fabricate pricing/licensing/contractual details — say
+     "I don't have access to that information" instead. Tone: professional, empathetic,
+     and concise (it's a chat, so keep replies short).
+  5. Confidence Net (tiny sklearn MLP) scores the draft 0..1.
+  6. Routing: if AUTO_SEND_ENABLED and score >= CONFIDENCE_THRESHOLD -> sendMessage
+     automatically; otherwise -> human review queue (dashboard).
+  7. Every LLM call logs model, input/output tokens, cost_usd.
+
+SAFETY / DEMO RULES:
+  - AUTO_SEND_ENABLED defaults to false: during cold-start and the demo, EVERY
+    reply goes through human review before being sent. Flip to true to enable the
+    auto path once the MLP is trusted.
+  - No secrets in code. TELEGRAM_BOT_TOKEN + ANTHROPIC_API_KEY in env only.
+
+MLP TRAINING DATA (cold-start plan):
+  - A Telegram bot cannot scrape historical chats (it only sees messages sent to
+    it after creation), so we BOOTSTRAP with a generated dataset:
+    scripts/seed_history.py produces realistic Ramco (question -> ideal reply)
+    pairs spanning a wide quality range, used to seed the feedback log and to
+    create labeled MLP training data (label 1 if a candidate draft is close to the
+    ideal reply, 0 if far).
+  - Thereafter, REAL conversations with the bot accumulate as genuine history, and
+    human approve/edit actions in the dashboard become real labels for retraining.
+
+DELIVERABLES (homework):
+  - Screen recording (5-10 min): DM the deployed bot real Ramco questions; show
+    the draft + confidence score + dashboard (cost, context window).
+  - PDF report (2-3 pages): build process + performance analysis
+    (accuracy, speed, cost, hallucination rate).
+  - Hosted link: deploy on Railway (reuse the proven Dockerfile / railway.toml /
+    entrypoint.sh + SERVICE_ROLE multi-service setup) and submit the dashboard URL.
+
+BUILD IN PHASES — do not one-shot. See PLAN.md for the phase breakdown and the
+reuse map of which ../Auto-reply-agent modules port over unchanged.
