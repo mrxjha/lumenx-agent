@@ -4,7 +4,7 @@ An intelligent, cost-aware customer support agent for the LumenX SaaS platform. 
 
 ---
 
-## What This System Does
+## What This System Does                      
 
 1. **Polls** the LumenX admin inbox for unanswered customer threads
 2. **Classifies intent** (greeting, pricing, technical, refund, other) using a cheap fast model
@@ -16,7 +16,7 @@ An intelligent, cost-aware customer support agent for the LumenX SaaS platform. 
 
 ---
 
-## Architecture
+## Architecture                                             
 
 ```
 Incoming Message
