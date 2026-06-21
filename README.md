@@ -16,7 +16,7 @@ An intelligent, cost-aware customer support agent for the LumenX SaaS platform. 
 
 ---
 
-## Architecture                                             
+## Architecture                                                                                                                                          
 
 ```
 Incoming Message
