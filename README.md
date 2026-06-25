@@ -58,7 +58,7 @@ Confidence Net  (Tiny MLP, local inference)                  │
 ### Anti-Hallucination Guardrails
 The agent is instructed never to fabricate pricing tiers, refund windows, or cancellation policies. If the information is not in the loaded context, it responds with a polite acknowledgment rather than guessing.
 
-### Confidence Net (Tiny MLP)
+### Confidence Net (Tiny MLP                                                             
 A small two-hidden-layer neural network decides whether to auto-send a reply or route it to a human. It learns from the team's own edit history — every time a human approves, edits, or rejects a draft, that signal updates future predictions.
 
 **Ground truth collection strategy** — since there is no labeled data at project start:
