@@ -1,6 +1,6 @@
 # LumenX Auto-Reply Agent
 
-An intelligent, cost-aware customer support agent for the LumenX SaaS platform. It drafts replies to incoming customer messages, scores them with a Confidence Net, auto-sends high-confidence replies, and routes uncertain ones to a human review dashboard.
+An intelligent, cost-aware customer support agent for the LumenX SaaS platform. It drafts replies to incoming customer messages, scores them with a Confidence Net, auto-sends high-confidence replies, and routes uncertain ones to a human review dashboard.  
 
 ---
                        
@@ -185,8 +185,8 @@ All actual costs are tracked per reply in the database and visible in the dashbo
 
 - **GitHub**: https://github.com/VizuaraAI/lumenx
 - **Deployed Site**: https://lumenx-demo.up.railway.app
-- **Customer Chat**: https://lumenx-demo.up.railway.app/chat
-- **Admin UI**: https://lumenx-demo.up.railway.app/admin
+- **Customer Chat**: https://lumenx-demo.up.railway.app/chat                                                
+- **Admin UI**: https://lumenx-demo.up.railway.app/admin                            
 
 ---
 
